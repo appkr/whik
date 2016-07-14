@@ -1,7 +1,7 @@
 {
-    "name": "laravel/laravel",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "name": "appkr/whik",
+    "description": "Real-time Laravel Demo Project",
+    "keywords": ["laravel", "socket.io"],
     "license": "MIT",
     "type": "project",
     "require": {

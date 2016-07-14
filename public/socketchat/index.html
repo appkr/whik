@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SocketChat</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:100">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font: 14px Lato; }
+    #console { background-color: #eee; padding: 4px; position: fixed; bottom: 0; width: 100%; }
+    form { width: 100%; }
+    form input { border: 0; padding: 10px; width: 100%; }
+    #info { font-size: 9px; color: #888; padding: 6px; height: 22px;}
+    #messages { list-style-type: none; margin: 0; padding: 0;}
+    #messages li { padding: 5px 10px;}
+    #messages li:nth-child(odd) { background: #efefef; }
+  </style>
+</head>
+<body id="app">
+  <ul id="messages">
+    <li v-for="message in messages" v-text="message"></li>
+  </ul>
+
+  <div id="console">
+    <form @submit.prevent="send">
+      <input type="text"
+             class="form-control"
+             v-model="message"
+             @keyup="send('Someone starts to typing a message...', $event)"
+             placeholder="Chat message here..."
+      >
+    </form>
+    <div id="info" v-text="info">&nbsp;</div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.min.js"></script>
+  <script>
+    var socket = io('https://whik-appkr.c9users.io:8082');
+
+    new Vue({
+      el: '#app',
+
+      data: {
+        messages: [],
+        message: '',
+        info: ''
+      },
+
+      ready: function () {
+        socket.on('chat.message', function (message) {
+          // Now all clients listen for an 'chat.message' event.
+          // When that happens, a client update the 'messages' array,
+          this.messages.push(message);
+        }.bind(this));
+
+        socket.on('chat.info', function (info) {
+          this.info = info;
+
+          setTimeout(function () {
+            this.info = '';
+          }.bind(this), 1000);
+        }.bind(this));
+      },
+
+      methods: {
+        send: function (info, event) {
+          if (typeof event !== 'undefined') {
+            // By checking the existence of second args,
+            // We can safely assume the first argument is information message.
+            socket.emit('chat.info', info);
+            return;
+          }
+
+          // Send message to the server.
+          // Upon receiving the server will broadcast this message to all clients.
+          socket.emit('chat.message', this.message);
+          this.message = '';
+        }
+      }
+    });
+  </script>
+</body>
+</html>
