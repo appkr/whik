@@ -1,16 +1,16 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Application Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register all of the routes for an application.
-| It's a breeze. Simply tell Laravel the URIs it should respond to
-| and give it the controller to call when that URI is requested.
-|
-*/
+Route::get('pub', function () {
+    $data = [
+        'event' => 'App\\Events\\NewUserCreated',
+        'data' => factory(App\User::class)->make()->toArray(),
+    ];
 
-Route::get('/', function () {
+    Redis::publish('whik', json_encode($data));
+
+    return response()->json($data, 200, [], JSON_PRETTY_PRINT);
+});
+
+Route::get('sub', function () {
     return view('welcome');
 });

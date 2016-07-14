@@ -1,45 +1,41 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Laravel</title>
+<head>
+  <title>Redis</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:100">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css">
+</head>
+<body id="app">
+  <div class="container">
+    <h1 class="page-header">List of New Users</h1>
 
-        <link href="https://fonts.googleapis.com/css?family=Lato:100" rel="stylesheet" type="text/css">
+    <ul>
+      <li v-for="user in users">@{{ user.name }} <@{{ user.email }}></li>
+    </ul>
 
-        <style>
-            html, body {
-                height: 100%;
-            }
+    {{--<pre>--}}
+      {{--@{{ $data | json }}--}}
+    {{--</pre>--}}
+  </div>
 
-            body {
-                margin: 0;
-                padding: 0;
-                width: 100%;
-                display: table;
-                font-weight: 100;
-                font-family: 'Lato', sans-serif;
-            }
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.min.js"></script>
+  <script>
+    var socket = io('{{ env('APP_URL') }}' + ':8082');
 
-            .container {
-                text-align: center;
-                display: table-cell;
-                vertical-align: middle;
-            }
+    new Vue({
+      el: '#app',
 
-            .content {
-                text-align: center;
-                display: inline-block;
-            }
+      data: {
+        users: []
+      },
 
-            .title {
-                font-size: 96px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="content">
-                <div class="title">Laravel 5</div>
-            </div>
-        </div>
-    </body>
+      ready: function () {
+        socket.on('whik:App\\Events\\NewUserCreated', function (data) {
+          this.users.push(data);
+        }.bind(this));
+      }
+    });
+  </script>
+</body>
 </html>
