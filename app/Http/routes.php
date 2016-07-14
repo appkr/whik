@@ -1,14 +1,10 @@
 <?php
 
 Route::get('pub', function () {
-    $data = [
-        'event' => 'App\\Events\\NewUserCreated',
-        'data' => factory(App\User::class)->make()->toArray(),
-    ];
+    $user = factory(App\User::class)->make()->toArray();
+    event(new App\Events\NewUserCreated($user));
 
-    Redis::publish('whik', json_encode($data));
-
-    return response()->json($data, 200, [], JSON_PRETTY_PRINT);
+    return $user;
 });
 
 Route::get('sub', function () {

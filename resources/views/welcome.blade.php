@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Redis</title>
+  <title>Broadcast</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:100">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css">
 </head>
@@ -32,7 +32,7 @@
 
       ready: function () {
         socket.on('whik:App\\Events\\NewUserCreated', function (data) {
-          this.users.push(data);
+          this.users.push(data.user);
         }.bind(this));
       }
     });
